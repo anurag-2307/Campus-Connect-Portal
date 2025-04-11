@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Join a Club</title>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="club_email">Club Email:</label>
+        <input type="email" name="club_email" id="club_email" required>
+    
+        <label for="club_password">Club Password:</label>
+        <input type="password" name="club_password" id="club_password" required>
+    
+        <button type="submit">Join Club</button><br>
+        <a href="{%url 'homePage'%}">Home Page</a>
+
+    </form>
+    
+</body>
+</html>

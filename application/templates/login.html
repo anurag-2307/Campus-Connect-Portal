@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href = "{%static 'css/animation.css' %}">
+  <title>Login | Campus Connect</title>
+  <style>
+    /* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body and Container */
+  body {
+    width: 100%;
+    min-height: 100vh;
+    font-family: 'Inria Sans', sans-serif;
+    letter-spacing: 1.2px;
+    background: radial-gradient(circle, #1a1a1a 0%, #121212 80%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers header + form horizontally */
+    justify-content: center; /* Centers header + form vertically */
+  }
+  
+  /* Title */
+  h1 {
+    margin-bottom: 2rem; /* Increased space between title and form */
+    font-size: 2.5rem;
+    text-align: center;
+  }
+  
+  
+  /* Form Wrapper */
+  .form-container {
+    display: flex;
+    flex-direction: column; /* Stacks input fields vertically */
+    align-items: center;
+    gap: 2.5rem; /* More space between input fields */
+  }
+  
+  /* Input Fields */
+  .form-container input[type="email"],
+  .form-container input[type="password"] {
+    width: 250px; /* Slightly increased width */
+    padding: 0.6rem 1rem;
+    border: none;
+    outline: none;
+    border-radius: 6px; /* Slightly more rounded */
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: background-color 0.3s ease-in-out;
+    letter-spacing: 1px;
+  }
+  
+  .form-container input[type="email"]::placeholder,
+  .form-container input[type="password"]::placeholder {
+    color: #ccc;
+  }
+  
+  .form-container input[type="email"]:focus,
+  .form-container input[type="password"]:focus {
+    background-color: #ffffff33;
+  }
+  
+  /* Improved Login Button */
+  .form-container button {
+    border: none;
+    outline: none;
+    padding: 0.8rem 1.5rem; /* Slightly larger padding for better proportion */
+    border-radius: 15px; /* More rounded corners for a modern look */
+    font-size: 1.2rem; /* Larger text size */
+    font-weight: 600;
+    cursor: pointer;
+    color: #ffffff;
+    background: linear-gradient(135deg, #069c9c, #07929c);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3); /* Slightly more intense shadow */
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .form-container button:hover {
+    background: linear-gradient(135deg, #06bfbf, #038383);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35); /* Stronger shadow on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+  }
+  
+  /* Register Link */
+  .form-container .register-link {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.5s ease-in-out, text-decoration-color 0.5s ease-in-out;
+  }
+  
+  .form-container .register-link:hover {
+    color: #06bfbf;
+    text-decoration-color: #06bfbf;
+  }
+  
+  </style>
+</head>
+<body class = "gradient-animate">
+  <h1>Campus Connect</h1>
+  <form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="form-container">
+      <input type="email" name="user_email" placeholder="Enter email" required />
+      <input type="password" name="user_password" placeholder="Enter password" required />
+      <button type="submit">Log In</button>
+      <a href="{% url 'register' %}" class="register-link">Register</a>
+    </div>
+  </form>
+</body>
+</html>

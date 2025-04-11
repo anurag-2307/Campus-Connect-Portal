@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            background: radial-gradient(circle, #1a1a1a 10%, #121212 80%);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .event-details {
+            font-size: 40px;
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        .event-card {
+            margin-bottom: 50px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .event-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 20px;
+        }
+
+        .event-label {
+            color: #b3b3b3;
+        }
+
+        .event-value {
+            text-align: right;
+            flex-grow: 1;
+        }
+
+        .register-for-event {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        /* Styling the button */
+        .register-for-event button {
+            letter-spacing: 1px;
+            color:#b3b3b3; /* Text color */
+            font-size: 18px; /* Font size */
+            padding: 15px 30px; /* Adequate padding */
+            border: none; /* Remove default border */
+            cursor: pointer; /* Pointer cursor on hover */
+            background-color: #333; /* Dark background to match the theme */
+            border-radius: 5px; /* Slightly rounded corners */
+            transition: background-color 0.8s ease, transform 0.3s ease; /* Smooth transition for background color and scaling */
+            width: 100%; /* Make it responsive and full width */
+            max-width: 400px; /* Limit the max-width */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow to give depth */
+        }
+        
+        /* Button hover effects */
+        .register-for-event button:hover {
+            background-color: teal; /* Highlight with teal on hover */
+            transform: scale(1.05); /* Slightly enlarge button on hover */
+        }
+        
+        /* Remove focus outline */
+        .register-for-event button:focus {
+            outline: none; /* Remove default focus outline */
+            box-shadow: none; /* Remove any default box-shadow on focus */
+        }
+
+        .back a {
+            color: white;
+            text-decoration: underline;
+            text-decoration-color: transparent; /* Hide underline initially */
+            font-size: 18px;
+            transition: color 0.25s ease-in, text-decoration-color 0.5s ease-in;
+        }
+        .back a:hover {
+            color: teal;
+            text-decoration-color: teal; /* Show underline with same timing */
+        }
+        .event-image {
+            display: flex; /* Ensure that the images are handled in a flex container */
+            justify-content: center; /* Center the images within their container */
+            flex-wrap: wrap; /* Allow the images to wrap to the next row if needed */
+            gap: 20px; /* Add space between images */
+            margin-top: 20px;
+        }
+        
+        .event-image img {
+            width: 100%; /* Make the image responsive */
+            max-width: 300px; /* Limit the maximum width of the image */
+            height: 200px; /* Set a fixed height for the image */
+            object-fit: cover; /* Ensure the image covers the area without stretching */
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Add a little shadow */
+            transition: transform 0.3s ease; /* Smooth scaling transition */
+        }
+        
+        .event-image img:hover {
+            transform: scale(1.05); /* Slightly scale the image on hover */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="back">
+            <a href="{% url 'homePage' %}">← Back</a>
+        </div>
+
+        <div class="event-details">Event Details : {{event.event_name}}</div>
+
+        <div class="event-card">
+            <div class="event-info">
+                <span class="event-label">Event Name:</span>
+                <span class="event-value">{{ event.event_name }}</span>
+            </div>
+            <div class="event-info">
+                <span class="event-label">Organized By:</span>
+                <span class="event-value">{{ event.club.club_name }}</span>
+            </div>
+            <div class="event-info">
+                <span class="event-label">Description:</span>
+                <span class="event-value">{{ event.event_desc }}</span>
+            </div>
+            <div class="event-info">
+                <span class="event-label">Date:</span>
+                <span class="event-value">{{ event.event_date }}</span>
+            </div>
+            <div class="event-info">
+                <span class="event-label">Location:</span>
+                <span class="event-value">{{ event.event_location }}</span>
+            </div>
+                <div class="event-image">
+                    {% for image in event.images.all %}
+                        <img src="{{ image.image.url }}" alt="{{ event.event_name }} image">
+                    {% empty %}
+                        <p>No images available for this event.</p>
+                    {% endfor %}
+                </div>
+            <div class="register-for-event">
+                <form method="POST" action="{% url 'register_event' event.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Register for {{ event.event_name }}</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

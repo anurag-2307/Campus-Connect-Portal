@@ -1,0 +1,108 @@
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Inria Sans', sans-serif;
+      letter-spacing: 1.2px;
+      background: radial-gradient(circle, #1a1a1a 0%, #121212 80%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    h1 {
+      margin-bottom: 1.5rem;
+      font-size: 2.5rem;
+      text-align: center;
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 400px;
+
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="email"],
+    .form-container input[type="password"] {
+      width: 100%;
+      max-width: 300px;
+      padding: 0.6rem 1rem;
+      border: none;
+      outline: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .form-container input::placeholder {
+      color: #ccc;
+      letter-spacing: 1px;
+    }
+
+    .form-container input:focus {
+      background-color: #ffffff33;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .radio-group label {
+      cursor: pointer;
+    }
+
+    .form-container button {
+      border: none;
+      outline: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 15px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #069c9c, #07929c);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s ease-in-out;
+    }
+
+    .form-container button:hover {
+      background: linear-gradient(135deg, #06bfbf, #038383);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .alternative {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .alternative a {
+      color: #fff;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      font-weight: 500;
+      transition: color 0.5s ease-in-out, text-decoration-color 0.5s ease-in-out;
+    }
+
+    .alternative a:hover {
+      color: #06bfbf;
+      text-decoration-color: #06bfbf;
+    }

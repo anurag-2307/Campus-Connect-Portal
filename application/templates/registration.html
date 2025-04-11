@@ -1,0 +1,37 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register|Campus Connect</title>
+  <link rel="stylesheet" href= "{%static 'css/registration.css' %}">
+    <link rel="stylesheet" href = "{%static 'css/animation.css' %}">
+</head>
+<body class="gradient-animate">
+  {% block content %}
+  <form method="POST" action="{% url 'register' %}">
+    
+    {% csrf_token %} 
+    <div class="form-container">
+      <h1>Campus Connect</h1>
+      <input type="text" name="first_name" placeholder="Enter first name" required>
+      <input type="text" name="last_name" placeholder="Enter last name" required>
+      <input type="text" name="user_name" placeholder="Enter user name" required>
+      <input type="email" name="user_email" placeholder="Enter email" required>
+      <input type="password" name="user_password1" placeholder="Enter password" required>
+      <input type="password" name="user_password2" placeholder="Confirm password" required>
+      <div class="radio-group">
+        <label><input type="radio" name="is_club_admin" value="on"> Club Admin</label>
+        <label><input type="radio" name="is_club_admin" value="off" checked> User</label>
+      </div>
+      <button type="submit">Register</button>
+      <p class="alternative">
+        Already have an account? <a href="{% url 'login' %}" class="login-link">Login</a>
+      </p>
+    </div>
+  </form>
+  </body>
+  </html> 
+  {% endblock %}
+  

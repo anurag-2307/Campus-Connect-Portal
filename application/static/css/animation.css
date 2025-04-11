@@ -1,0 +1,317 @@
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+    }
+    1% {
+    background-position: 2% 50%;
+    }
+    2% {
+    background-position: 4% 50%;
+    }
+    3% {
+    background-position: 6% 50%;
+    }
+    4% {
+    background-position: 8% 50%;
+    }
+    5% {
+    background-position: 10% 50%;
+    }
+    6% {
+    background-position: 12% 50%;
+    }
+    7% {
+    background-position: 14% 50%;
+    }
+    8% {
+    background-position: 16% 50%;
+    }
+    9% {
+    background-position: 18% 50%;
+    }
+    10% {
+    background-position: 20% 50%;
+    }
+    11% {
+    background-position: 22% 50%;
+    }
+    12% {
+    background-position: 24% 50%;
+    }
+    13% {
+    background-position: 26% 50%;
+    }
+    14% {
+    background-position: 28% 50%;
+    }
+    15% {
+    background-position: 30% 50%;
+    }
+    16% {
+    background-position: 32% 50%;
+    }
+    17% {
+    background-position: 34% 50%;
+    }
+    18% {
+    background-position: 36% 50%;
+    }
+    19% {
+    background-position: 38% 50%;
+    }
+    20% {
+    background-position: 40% 50%;
+    }
+    21% {
+    background-position: 42% 50%;
+    }
+    22% {
+    background-position: 44% 50%;
+    }
+    23% {
+    background-position: 46% 50%;
+    }
+    24% {
+    background-position: 48% 50%;
+    }
+    25% {
+    background-position: 50% 50%;
+    }
+    26% {
+    background-position: 52% 50%;
+    }
+    27% {
+    background-position: 54% 50%;
+    }
+    28% {
+    background-position: 56% 50%;
+    }
+    29% {
+    background-position: 58% 50%;
+    }
+    30% {
+    background-position: 60% 50%;
+    }
+    31% {
+    background-position: 62% 50%;
+    }
+    32% {
+    background-position: 64% 50%;
+    }
+    33% {
+    background-position: 66% 50%;
+    }
+    34% {
+    background-position: 68% 50%;
+    }
+    35% {
+    background-position: 70% 50%;
+    }
+    36% {
+    background-position: 72% 50%;
+    }
+    37% {
+    background-position: 74% 50%;
+    }
+    38% {
+    background-position: 76% 50%;
+    }
+    39% {
+    background-position: 78% 50%;
+    }
+    40% {
+    background-position: 80% 50%;
+    }
+    41% {
+    background-position: 82% 50%;
+    }
+    42% {
+    background-position: 84% 50%;
+    }
+    43% {
+    background-position: 86% 50%;
+    }
+    44% {
+    background-position: 88% 50%;
+    }
+    45% {
+    background-position: 90% 50%;
+    }
+    46% {
+    background-position: 92% 50%;
+    }
+    47% {
+    background-position: 94% 50%;
+    }
+    48% {
+    background-position: 96% 50%;
+    }
+    49% {
+    background-position: 98% 50%;
+    }
+    50% {
+    background-position: 100% 50%;
+    }
+    52% {
+    background-position: 102% 50%;
+    }
+    53% {
+    background-position: 100% 50%;
+    }
+    54% {
+    background-position: 98% 50%;
+    }
+    55% {
+    background-position: 96% 50%;
+    }
+    56% {
+    background-position: 94% 50%;
+    }
+    57% {
+    background-position: 92% 50%;
+    }
+    58% {
+    background-position: 90% 50%;
+    }
+    59% {
+    background-position: 88% 50%;
+    }
+    60% {
+    background-position: 86% 50%;
+    }
+    61% {
+    background-position: 84% 50%;
+    }
+    62% {
+    background-position: 82% 50%;
+    }
+    63% {
+    background-position: 80% 50%;
+    }
+    64% {
+    background-position: 78% 50%;
+    }
+    65% {
+    background-position: 76% 50%;
+    }
+    66% {
+    background-position: 74% 50%;
+    }
+    67% {
+    background-position: 72% 50%;
+    }
+    68% {
+    background-position: 70% 50%;
+    }
+    69% {
+    background-position: 68% 50%;
+    }
+    70% {
+    background-position: 66% 50%;
+    }
+    71% {
+    background-position: 64% 50%;
+    }
+    72% {
+    background-position: 62% 50%;
+    }
+    73% {
+    background-position: 60% 50%;
+    }
+    74% {
+    background-position: 58% 50%;
+    }
+    75% {
+    background-position: 56% 50%;
+    }
+    76% {
+    background-position: 54% 50%;
+    }
+    77% {
+    background-position: 52% 50%;
+    }
+    78% {
+    background-position: 50% 50%;
+    }
+    79% {
+    background-position: 48% 50%;
+    }
+    80% {
+    background-position: 46% 50%;
+    }
+    81% {
+    background-position: 44% 50%;
+    }
+    82% {
+    background-position: 42% 50%;
+    }
+    83% {
+    background-position: 40% 50%;
+    }
+    84% {
+    background-position: 38% 50%;
+    }
+    85% {
+    background-position: 36% 50%;
+    }
+    86% {
+    background-position: 34% 50%;
+    }
+    87% {
+    background-position: 32% 50%;
+    }
+    88% {
+    background-position: 30% 50%;
+    }
+    89% {
+    background-position: 28% 50%;
+    }
+    90% {
+    background-position: 26% 50%;
+    }
+    91% {
+    background-position: 24% 50%;
+    }
+    92% {
+    background-position: 22% 50%;
+    }
+    93% {
+    background-position: 20% 50%;
+    }
+    94% {
+    background-position: 18% 50%;
+    }
+    95% {
+    background-position: 16% 50%;
+    }
+    96% {
+    background-position: 14% 50%;
+    }
+    97% {
+    background-position: 12% 50%;
+    }
+    98% {
+    background-position: 10% 50%;
+    }
+    99% {
+    background-position: 8% 50%;
+    }
+    100% {
+    background-position: 6% 50%;
+    }
+    }
+
+    .gradient-animate {
+        background: radial-gradient(
+  circle,
+  #272f33,
+  #1f2a2a,
+  #121212
+);
+        background-size: 400% 400%;
+        animation: gradientMove 25s ease-in-out infinite;
+        padding: 2rem;
+        border-radius: 1rem;
+        color: white;
+      }
+      

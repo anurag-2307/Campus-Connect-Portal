@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2> EVENT DETAILS </h2>
+    <h4>Register for {{event.event_name}}</h4>
+    <h4> Organised By : {{event.club.club_name}}</h4>
+    <h4> Event Date : {{event.event_date}}</h4>
+    <h4> Event Location : {{event.event_location}} </h4>
+    <h4> Description : {{event.event_desc}}</h4>
+    <a href="{%url 'register_event' event.id %}"> Click Here to confirm Event Registration</a>
+</body>
+</html>

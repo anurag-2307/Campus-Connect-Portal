@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+    
+        <br><label for="id_event_name">Event Name:</label>
+        {{ form.event_name }}
+    
+        <br><label for="id_event_desc">Event Description:</label>
+        {{ form.event_desc }}
+    
+        <br><label for="id_event_date">Event Date:</label>
+        {{ form.event_date }}
+    
+        <br><label for="id_event_location">Event Location:</label>
+        {{ form.event_location }}
+    
+        <br><label for="id_posts">Add More Images:</label>
+        <input type="file" name="posts" multiple id="id_posts">
+    
+        <br><button type="submit">Update Event</button><br>
+    </form>
+    <a href="{%url 'event_list'%}">Back to Event List</a>
+    <h3>Current Images</h3>
+    <div class="event-images">
+        {% for image in event.images.all %}
+            <img src="{{ image.image.url }}" alt="Event Image" width="200">
+        {% empty %}
+            <p>No images uploaded yet.</p>
+        {% endfor %}
+    </div>
+    
+
+</body>
+</html>

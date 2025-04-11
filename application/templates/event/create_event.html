@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Event</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400&display=swap">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Inria Sans', sans-serif;
+      letter-spacing: 1.2px;
+      background: radial-gradient(circle, #1a1a1a 0%, #121212 80%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2.2rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .form-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .form-group label {
+      flex: 1;
+      font-size: 1rem;
+      color: #ccc;
+      min-width: 120px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group input[type="file"],
+    .form-group select,
+    .form-group textarea {
+      flex: 2;
+      padding: 0.6rem 1rem;
+      border: none;
+      outline: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transition: background-color 0.3s ease-in-out;
+      width: 100%;
+    }
+
+    .form-group input[type="file"] {
+      padding: 0.5rem;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #ccc;
+      letter-spacing: 1px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      background-color: #ffffff33;
+    }
+
+    button {
+      border: none;
+      outline: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 15px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #069c9c, #07929c);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s ease-in-out;
+      margin-top: 1.2rem;
+      width: 100%;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #06bfbf, #038383);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .messages {
+      color: red;
+      font-size: 0.95rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .back-link a {
+      color: #fff;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      transition: color 0.5s ease-in-out, text-decoration-color 0.5s ease-in-out;
+    }
+
+    .back-link a:hover {
+      color: #06bfbf;
+      text-decoration-color: #06bfbf;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Create an Event</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="messages">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="id_event_name">Event Name:</label>
+        {{ form.event_name }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_event_desc">Event Description:</label>
+        {{ form.event_desc }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_event_date">Event Date:</label>
+        {{ form.event_date }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_event_location">Event Location:</label>
+        {{ form.event_location }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_club">Select Club:</label>
+        <select name="club" id="id_club">
+          {% for club in form.fields.club.queryset %}
+            <option value="{{ club.id }}">{{ club.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="id_standard_price">Standard Price (₹):</label>
+        {{ form.standard_price }}
+      </div>
+      
+      <div class="form-group">
+        <label for="id_member_discount_price">Member Discount Price (₹):</label>
+        {{ form.member_discount_price }}
+      </div>
+      <div class="form-group">
+        <label for="id_posts">Event Images:</label>
+        <input type="file" name="posts" multiple id="id_posts">
+      </div>
+
+      <button type="submit" onclick="return confirm('Event has been created successfully');">Create Event</button>
+    </form>
+
+    <div class="back-link">
+      <a href="{% url 'homePage' %}">← Back to Home</a>
+    </div>
+  </div>
+</body>
+</html>

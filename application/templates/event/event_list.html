@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            background: radial-gradient(circle, #1a1a1a 10%, #121212 80%);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .upcoming-events {
+            font-size: 50px;
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        .event-card {
+            margin-bottom: 50px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .event-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 20px;
+        }
+
+        .event-label {
+            color: #b3b3b3;
+        }
+
+        .event-value {
+            text-align: right;
+            flex-grow: 1;
+        }
+
+        .register-for-event {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .admin-actions{
+            text-align: center;
+            margin-top : 15px;
+        }
+        .admin-actions a {
+            color: white;
+            text-decoration: underline;
+            text-decoration-color: transparent; /* Hide underline initially */
+            font-size: 18px;
+            transition: color 0.25s ease-in, text-decoration-color 0.5s ease-in;
+        }
+        .admin-actions a:hover {
+            color: teal;
+            text-decoration-color: teal; /* Show underline on hover */
+        }
+        .register-for-event a, 
+        .back a {
+            color: white;
+            text-decoration: underline;
+            text-decoration-color: transparent; /* Hide underline initially */
+            font-size: 18px;
+            transition: color 0.25s ease-in, text-decoration-color 0.5s ease-in;
+        }
+        .register-for-event a:hover, 
+        .back a:hover {
+            color: teal;
+            text-decoration-color: teal; /* Show underline with same timing */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="back">
+            <a href="{% url 'homePage' %}">← Back</a>
+        </div>
+
+        <div class="upcoming-events">Upcoming Events</div>
+
+        {% for event in events %}
+        <div class="event-card">
+            <div class="event-info">
+                <span class="event-label">Event Name:</span>
+                <span class="event-value">{{ event.event_name }}</span>
+            </div>
+            <div class="event-info">
+                <span class="event-label">Organized By:</span>
+                <span class="event-value">{{ event.club.club_name }}</span>
+            </div>
+            <div class="event-info">
+                <span class="event-label">Description:</span>
+                <span class="event-value">{{ event.event_desc }}</span>
+            </div>
+            <div class="event-info">
+                <span class="event-label">Date:</span>
+                <span class="event-value">{{ event.event_date }}</span>
+            </div>
+            <div class="event-info">
+                <span class="event-label">Location:</span>
+                <span class="event-value">{{ event.event_location }}</span>
+            </div>
+            {%if user.is_club_admin%}
+            <div class="admin-actions">
+            <a href="{%url 'update_event' event.id%}"> Edit Event</a>
+            <a href="{% url 'delete_event' event.id %}" onclick="return confirm('Are you sure you want to delete this event?');" style="color: rgb(255, 255, 255);">Delete Event</a>
+            </div>
+            {%else%}
+            <div class="register-for-event">
+                <a href="{% url 'register_event' event.id %}">Register for {{ event.event_name }}</a>
+            </div>
+            {%endif%}
+        </div>
+        {% endfor %}
+
+    </div>
+
+</body>
+</html>
