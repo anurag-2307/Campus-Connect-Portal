@@ -7,6 +7,7 @@
   <title>Register|Campus Connect</title>
   <link rel="stylesheet" href= "{%static 'css/registration.css' %}">
     <link rel="stylesheet" href = "{%static 'css/animation.css' %}">
+    <link rel="stylesheet" href = "{%static 'css/toastmessage.css' %}">
 </head>
 <body class="gradient-animate">
   {% block content %}
@@ -31,6 +32,15 @@
       </p>
     </div>
   </form>
+  {% if messages %}
+    <div id="toast-container">
+        {% for message in messages %}
+            <div class="toast toast-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {%endif%}
   </body>
   </html> 
   {% endblock %}

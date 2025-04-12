@@ -153,6 +153,18 @@
                         <p>No images available for this event.</p>
                     {% endfor %}
                 </div>
+                <div class="event-info">
+                    <span class="event-label">Registration Fee:</span>
+                    <span class="event-value">
+                        {% if request.user.is_authenticated and event.club in request.user.clubs.all %}
+                       
+                            <del>₹{{ event.standard_price }}</del>
+                            <strong style="color: teal; margin-left: 10px;">Member's Price: ₹{{ event.member_discount_price }}</strong>
+                        {% else %}
+                            ₹{{ event.standard_price }}
+                        {% endif %}
+                    </span>
+                </div>
             <div class="register-for-event">
                 <form method="POST" action="{% url 'register_event' event.id %}">
                     {% csrf_token %}

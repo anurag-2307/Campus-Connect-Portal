@@ -1,10 +1,11 @@
+{%load static%}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width">
     <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="{%static 'css/toastmessage.css'%}">
     <style>
         body {
             margin: 0;
@@ -127,6 +128,15 @@
         {% endfor %}
 
     </div>
+{% if messages %}
+  <div id="toast-container">
+      {% for message in messages %}
+          <div class="toast toast-{{ message.tags }}">
+              {{ message }}
+          </div>
+      {% endfor %}
+  </div>
+{% endif %}
 
 </body>
 </html>

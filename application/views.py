@@ -7,64 +7,56 @@ from application.forms import EventForm, ClubForm, ClubJoinForm
 from django.contrib.auth.hashers import make_password, check_password
 
 #the user will register here.
+
 def register(request):
     if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        user_name = request.POST['user_name']
-        user_email = request.POST['user_email']
-        user_password1 = request.POST['user_password1']
-        user_password2 = request.POST['user_password2']
-        is_club_admin = request.POST.get('is_club_admin', 'off') == "on"
+        first_name      = request.POST['first_name']
+        last_name       = request.POST['last_name']
+        user_name       = request.POST['user_name']
+        user_email      = request.POST['user_email']
+        user_password1  = request.POST['user_password1']
+        user_password2  = request.POST['user_password2']
+        is_club_admin   = request.POST.get('is_club_admin', 'off') == "on"
 
-        if user_password1 == user_password2:
-            if CustomUser.objects.filter(email=user_email).exists():
-                messages.error(request, 'Email already exists.')
-                return redirect('register')
-            elif CustomUser.objects.filter(username=user_name).exists():
-                messages.error(request, 'UserName already taken.')
-                return redirect('register')
-            else:
-                # Create the user first
-                user = CustomUser.objects.create_user(
-                    username=user_name,
-                    email=user_email,
-                    password=user_password1,
-                    first_name=first_name,
-                    last_name=last_name,
-                    is_club_admin=is_club_admin
-                )
-                user.save()
-
-                # Create a club if the user is a club admin
-                if is_club_admin:
-                    # Create or get the default club
-                    club, created = Club.objects.get_or_create(
-                        club_name=f"{user.first_name}'s Club",  # Unique name
-                        defaults={
-                            'club_email': user_email,
-                            'club_desc': "Default Description for Club"
-                        }
-                    )
-
-                    # Ensure the password is hashed
-                    hashed_password = make_password(user_password1)
-
-                    # Create the ClubAdmin record
-                    club_admin = ClubAdmin.objects.create(
-                        user=user,
-                        club=club,
-                        club_password=hashed_password
-                    )
-                    club_admin.delete()
-                messages.success(request, "Registration successful! Please log in.")
-                return redirect('login')
-        else:
-            messages.error(request, 'Passwords do not match')
+        # Validate password match.
+        if user_password1 != user_password2:
+            messages.error(request, 'Passwords do not match.')
             return redirect('register')
+
+        # Normalize email to lower case to enforce uniqueness properly.
+        normalized_email = user_email.lower()
+
+        # Check for duplicate email/username.
+        if CustomUser.objects.filter(email=normalized_email).exists():
+            messages.error(request, 'Email already exists.')
+            return redirect('register')
+
+        if CustomUser.objects.filter(username=user_name).exists():
+            messages.error(request, 'Username already taken.')
+            return redirect('register')
+
+        try:
+            with transaction.atomic():
+                user = CustomUser.objects.create_user(
+                    username   = user_name,
+                    email      = normalized_email,
+                    password   = user_password1,
+                    first_name = first_name,
+                    last_name  = last_name,
+                    is_club_admin = is_club_admin
+                )
+            messages.success(request, "Registration successful! Please log in.")
+            return redirect('login')
+
+        except IntegrityError as e:
+            # Log the error or print for debugging.
+            print("IntegrityError:", e)
+            messages.error(request, f"Registration failed: {str(e)}")
+            return redirect('register')
+
     else:
         return render(request, 'registration.html')
-
+    
 def login(request):
     if request.method == 'POST':
         user_email = request.POST['user_email']
@@ -87,6 +79,12 @@ def login(request):
 def homePage(request):
     return render(request, 'home.html')
 
+def is_club_member(request):
+    return request.user.clubs.exists()
+
+def user_join(request):
+    clubs = Club.objects.all()
+    return render(request, 'club/user_join.html', {'clubs' : clubs})
 
 def logout(request):
     auth.logout(request)
@@ -94,7 +92,7 @@ def logout(request):
 
 
 def clubPage(request):
-    return render(request, 'clubHome.html')
+    return render(request, 'home.html')
 
 
 # ----- Event CRUD Views for Club Admins -----
@@ -148,6 +146,7 @@ def create_event(request):
                     event=event,
                     image = event_image
                 )
+            messages.success(request,"Event created successfully.")
             return redirect('event_list')
         else:
             print("Form errors:", form.errors)
@@ -178,6 +177,7 @@ def update_event(request, event_id):
                     event=event,
                     image = event_image
                 )
+            messages.success(request, 'Event Updated Successfully.')
             return redirect('event_list')
         else:
             print("Form errors:", form.errors)
@@ -257,34 +257,41 @@ def join_club(request):
             club_email = form.cleaned_data["club_email"]
             club_password = form.cleaned_data["club_password"]
 
-            # Fetch the club using the provided email
+            # Fetch the club using the provided email.
             club = Club.objects.filter(club_email=club_email).first()
             if not club:
                 messages.error(request, "Club with this email does not exist.")
                 return redirect("join_club")
 
+            # Get the club’s current admin record for verification.
             club_admin = ClubAdmin.objects.filter(club=club).first()
             if not club_admin:
                 messages.error(request, "This club has no admin yet. Please contact the club.")
                 return redirect("homePage")
 
+            # Check if the provided password matches the club admin's password.
             if club_admin.check_password(club_password):
-                if request.user.is_club_admin:
-                    # Already admin flow
-                    messages.error(request, "You are already an admin of another club. Leave your current club first.")
-                    return redirect('homePage')
-
-                else:
-                    # Normal user flow → Redirect to virtual payment
-                    return redirect(f'{reverse("virtual_payment")}?type=club&id={club.id}')
+                # Since your registration now always sets is_club_admin True,
+                # we will proceed to create or update the club admin entry for the user.
+                new_admin, created = ClubAdmin.objects.get_or_create(user=request.user, club=club)
+                if created:
+                    messages.success(request, f"You have been added as an admin for {club.club_name}.")
+                # If your flow requires a virtual payment process after joining,
+                # redirect accordingly.
+                messages.success(request, 'You are now a club admin for {club.club_name}')
+                return redirect('clubPage')
             else:
                 messages.error(request, "Invalid club password.")
+                return redirect('join_club')
         else:
+            # Log form errors for debugging purposes.
             print("Form Errors:", form.errors)
             messages.error(request, "There were errors in the form.")
     
+    # For GET requests, instantiate an empty form.
     form = ClubJoinForm()
     return render(request, 'club/join_club.html', {'form': form})
+
 
 
 '''def register_event(request, event_id):
@@ -313,12 +320,10 @@ def register_event(request, event_id):
     
     event = get_object_or_404(Event, id = event_id)
     if request.method == "POST":
-        if EventRegistration.objects.filter(user=request.user, event = event).exists():
-            messages.error(request, 'You have already registered for the event.')
-        else:
-            is_member = request.user.clubs.exists()
-            amount = event.member_discount_price if is_member else event.standard_price
-            return redirect(f'{reverse("virtual_payment")}?type=event&id={event.id}&amount={amount}')
+        is_member = request.user.clubs.exists()
+        amount = event.member_discount_price if is_member else event.standard_price
+        messages.success(request, 'Registered for Event!')
+        return redirect(f'{reverse("virtual_payment")}?type=event&id={event.id}&amount={amount}')
 
     return render(request, 'event/register_event.html', {'event' : event})
 
@@ -328,24 +333,38 @@ def event_details(request,event_id):
 
 #virtual payment section
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Event, VirtualPayment, EventRegistration
+from .models import Event, EventRegistration
 from .forms import VirtualPaymentForm
 from django.core.mail import send_mail
 from django.contrib import messages
-
 def virtual_payment(request):
     obj_type = request.GET.get('type')
     obj_id = request.GET.get('id')
+    amount = request.GET.get('amount')
 
+    # Retrieve the target object first, based on type.
     if obj_type == 'event':
         target = get_object_or_404(Event, id=obj_id)
-        amount = target.registration_fee
     elif obj_type == 'club':
         target = get_object_or_404(Club, id=obj_id)
-        amount = target.membership_fee
     else:
         messages.error(request, "Invalid payment target.")
-        return redirect('home')
+        return redirect('homePage')
+
+    # If amount is not provided, use the default from the target.
+    if not amount:
+        if obj_type == 'club':
+            amount = target.membership_fee
+        elif obj_type == 'event':
+            # Assuming the event object has a field for fee (adjust if needed)
+            amount = target.registration_fee
+
+    # Validate and convert amount to float.
+    try:
+        amount = float(amount)
+    except (TypeError, ValueError):
+        messages.error(request, "Invalid payment amount.")
+        return redirect('homePage')
 
     if request.method == 'POST':
         form = VirtualPaymentForm(request.POST)
@@ -353,17 +372,23 @@ def virtual_payment(request):
             payment = form.save(commit=False)
             payment.user = request.user
             payment.amount = amount
+
             if obj_type == 'event':
                 payment.event = target
+                if EventRegistration.objects.filter(user=request.user, event=target).exists():
+                    return redirect('event_list')
+                # Only create registration AFTER payment is confirmed
                 EventRegistration.objects.create(user=request.user, event=target)
-            else:
+            else:  # obj_type == 'club'
                 payment.club = target
                 request.user.clubs.add(target)
+
             payment.save()
 
+            # Send confirmation email.
             send_mail(
                 subject='Payment Confirmation',
-                message=f'Hi {request.user.username},\n\nYou have successfully paid ₹{amount:.2f} for {target}.',
+                message=f'Hi {request.user.username},\n\nYou have successfully paid ₹{amount:.2f}.',
                 from_email='noreply@campusconnect.com',
                 recipient_list=[request.user.email],
                 fail_silently=True,
@@ -371,7 +396,6 @@ def virtual_payment(request):
 
             messages.success(request, f'Payment successful for {target}!')
             return redirect('clubPage' if obj_type == 'club' else 'event_list')
-
     else:
         form = VirtualPaymentForm()
 

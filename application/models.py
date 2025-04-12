@@ -74,7 +74,6 @@ class Event(models.Model):
     event_date = models.DateTimeField()
     event_location = models.CharField(max_length=255)
     event_image = models.ImageField(upload_to='event_images/', blank= True, null= True)
-    registration_fee = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
 
     standard_price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     member_discount_price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
@@ -102,12 +101,14 @@ class EventRegistration(models.Model):
 # models.p
 from django.conf import settings
 
+import uuid
+from django.db import models
+
 class VirtualPayment(models.Model):
     PAYMENT_CHOICES = [
         ('card', 'Credit/Debit Card'),
         ('upi', 'UPI'),
         ('netbanking', 'Net Banking'),
-        ('wallet', 'Wallet'),
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -116,7 +117,7 @@ class VirtualPayment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES)
     paid_on = models.DateTimeField(auto_now_add=True)
-    transaction_id = models.CharField(max_length=50, unique=True)
+    transaction_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     def __str__(self):
         target = self.event.event_name if self.event else self.club.club_name

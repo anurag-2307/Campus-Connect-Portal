@@ -1,13 +1,30 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Payment Page</title>
+    <title>Virtual Payment</title>
 </head>
 <body>
-    <h2>Virtual Payment Page</h2>
-<p>This will simulate payment based on event or club type.</p>
+    <h1>Virtual Payment</h1>
 
+    <p>
+        {% if type == 'event' %}
+            You are registering for the event: <strong>{{ object.name }}</strong>
+        {% elif type == 'club' %}
+            You are joining the club: <strong>{{ object.name }}</strong>
+        {% endif %}
+    </p>
+
+    <p>Amount to be paid: <strong>₹{{ amount }}</strong></p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Confirm Payment</button>
+    </form>
+
+    <br>
+    <a href="{% url 'homePage' %}">Cancel and go back</a>
 </body>
 </html>

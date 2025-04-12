@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Membership</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #1a1a1a, #121212);
+            color: white;
+            font-family: 'Inria Sans', sans-serif;
+            padding: 2rem;
+        }
+        .club-card {
+            background: rgba(26, 26, 26, 0.85);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .club-card h2,h4 {
+            margin: 0;
+            color: teal;
+        }
+        .club-card a {
+            color: white;
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            transition: 0.4s;
+        }
+        .club-card a:hover {
+            color: teal;
+            text-decoration-color: teal;
+        }
+        .back-link {
+            text-align: left;
+            margin-top: 1rem;
+            font-size: 1.5rem;
+          }
+      
+          .back-link a {
+            color: #fff;
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            transition: color 0.5s ease-in-out, text-decoration-color 0.5s ease-in-out;
+          }
+      
+          .back-link a:hover {
+            color: #06bfbf;
+            text-decoration-color: #06bfbf;
+          }
+    </style>
+</head>
+<body>
+    <div class="back-link">
+        <a href="{% url 'homePage' %}">← Back to Home</a>
+      </div>
+    <h1> All Clubs </h1>
+    {% for club in clubs %}
+        <div class = "club-card">
+            <h2> {{club.club_name}}</h2>
+            <h4> {{club.club_desc}}</h4>
+            <p> Membership fee : {{club.membership_fee}}</p>
+
+            {%if club not in request.user.clubs.all%}
+            <a href="{%url 'virtual_payment'%}?type=club&id={{club.id}}"> Join now</a>
+            {%else%}
+            <p> You are already a member of this club</p>
+            {%endif%}
+        </div>
+        {%endfor%}
+</body>
+</html>

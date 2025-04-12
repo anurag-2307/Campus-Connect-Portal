@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href = "{%static 'css/animation.css' %}">
+  <link rel="stylesheet" href = "{%static 'css/toastmessage.css' %}">
   <title>Login | Campus Connect</title>
   <style>
     /* Global Reset */
@@ -119,5 +120,14 @@
       <a href="{% url 'register' %}" class="register-link">Register</a>
     </div>
   </form>
+  {% if messages %}
+    <div id="toast-container">
+        {% for message in messages %}
+            <div class="toast toast-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {%endif%}
 </body>
 </html>

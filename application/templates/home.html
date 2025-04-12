@@ -1,23 +1,30 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400&display=swap">
+  <link rel="stylesheet" href="{%static 'css/toastmessage.css'%}">
+  <link rel="stylesheet" href="{%static 'css/animation.css'%}">
+  <title> Campus Connect</title>
   <style>
       /* Global Styles */
       body {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          min-height: 100vh;
-          font-family: 'Inria Sans', sans-serif;
-          letter-spacing: 2px;
-          background: radial-gradient(circle, #1a1a1a 0%, #121212 80%);
-          color: white;
-          display: flex;
-          flex-direction: column;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        width: 100%;
+        min-height: 100vh;
+        font-family: 'Inria Sans', sans-serif;
+        letter-spacing: 2px;
+        background: radial-gradient(circle, #1a1a1a 0%, #121212 80%);
+        color: white;
+        display: flex;
+        flex-direction: column;
       }
+      
 
       /* Navbar (inherits body's background) */
       .frame-child {
@@ -82,10 +89,15 @@
           color: teal;
           text-decoration-color: teal;
       }
+      .content-wrapper {
+        padding: 0 2rem;
+        flex: 1;
+      }
+      
   </style>
 </head>
-<body>
-
+<body class="gradient-animate">
+    <div class="content-wrapper">
   <div class="rectangle-parent">
     <!-- Navbar -->
     <div class="frame-child">
@@ -107,10 +119,14 @@
       {% endif %}
 
       {%if not user.is_club_admin%}
+          {%if not user.is_club_member%}
+          <a href="{%url 'user_join'%}"> Become a Club Member Now!</a>
+          {%endif%}
       <a href="{% url 'event_list' %}">Upcoming Events</a>
       <a href="{%url 'user_events'%}">Your Events</a>
-      {%endif%}
       <span class="user">{{ user.username }}</span>
+
+      {%endif%}
       <a href="{% url 'logout' %}">Logout</a>
       {% else %}
       <a href="{% url 'login' %}">Login</a>
@@ -119,9 +135,18 @@
 
           </div>
         </div>
+        </div>
 
     <!-- Events Section -->
   </div>
-
+  {% if messages %}
+    <div id="toast-container">
+        {% for message in messages %}
+            <div class="toast toast-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 </body>
 </html>

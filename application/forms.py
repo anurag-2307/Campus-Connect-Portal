@@ -52,7 +52,7 @@ class ClubForm(forms.ModelForm):
     )
     class Meta:
         model = Club
-        fields = ['club_name' , 'club_desc' , 'club_email']
+        fields = ['club_name' , 'club_desc' , 'club_email','membership_fee']
 
 class ClubJoinForm(forms.Form):
     club_email = forms.EmailField(

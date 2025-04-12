@@ -300,18 +300,14 @@
     background-position: 6% 50%;
     }
     }
-
     .gradient-animate {
-        background: radial-gradient(
-  circle,
-  #272f33,
-  #1f2a2a,
-  #121212
-);
-        background-size: 400% 400%;
-        animation: gradientMove 25s ease-in-out infinite;
-        padding: 2rem;
-        border-radius: 1rem;
-        color: white;
-      }
+      background: radial-gradient(circle, #272f33, #1f2a2a, #121212);
+      background-size: 150% 150%;
+      animation: gradientMove 25s ease-in-out infinite;
+      background-position: center;
+      overflow: hidden;
+      border-radius: 1rem;
+      color: white;
+    }
+    
       
