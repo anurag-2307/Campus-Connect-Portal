@@ -322,7 +322,6 @@ def register_event(request, event_id):
     if request.method == "POST":
         is_member = request.user.clubs.exists()
         amount = event.member_discount_price if is_member else event.standard_price
-        messages.success(request, 'Registered for Event!')
         return redirect(f'{reverse("virtual_payment")}?type=event&id={event.id}&amount={amount}')
 
     return render(request, 'event/register_event.html', {'event' : event})
@@ -340,13 +339,16 @@ from django.contrib import messages
 def virtual_payment(request):
     obj_type = request.GET.get('type')
     obj_id = request.GET.get('id')
-    amount = request.GET.get('amount')
-
     # Retrieve the target object first, based on type.
     if obj_type == 'event':
         target = get_object_or_404(Event, id=obj_id)
+        if request.user in target.club.members.all():
+            amount = target.member_discount_price
+        else:
+            amount = target.standard_price
     elif obj_type == 'club':
         target = get_object_or_404(Club, id=obj_id)
+        amount = target.membership_fee
     else:
         messages.error(request, "Invalid payment target.")
         return redirect('homePage')
@@ -356,8 +358,10 @@ def virtual_payment(request):
         if obj_type == 'club':
             amount = target.membership_fee
         elif obj_type == 'event':
-            # Assuming the event object has a field for fee (adjust if needed)
-            amount = target.registration_fee
+                if request.user in target.club.members.all():
+                    amount = target.member_discount_price  # discounted price for club members
+                else:
+                    amount = target.standard_price 
 
     # Validate and convert amount to float.
     try:
@@ -378,6 +382,7 @@ def virtual_payment(request):
                 if EventRegistration.objects.filter(user=request.user, event=target).exists():
                     return redirect('event_list')
                 # Only create registration AFTER payment is confirmed
+                
                 EventRegistration.objects.create(user=request.user, event=target)
             else:  # obj_type == 'club'
                 payment.club = target
@@ -395,7 +400,7 @@ def virtual_payment(request):
             )
 
             messages.success(request, f'Payment successful for {target}!')
-            return redirect('clubPage' if obj_type == 'club' else 'event_list')
+            return redirect('clubPage' if obj_type == 'club' else 'user_events')
     else:
         form = VirtualPaymentForm()
 

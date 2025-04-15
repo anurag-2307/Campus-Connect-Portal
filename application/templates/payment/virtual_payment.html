@@ -4,27 +4,124 @@
 <head>
     <meta charset="UTF-8">
     <title>Virtual Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{%static 'css/animation.css'%}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Inria Sans', sans-serif;
+            letter-spacing: 2px;
+            background: radial-gradient(circle, #1a1a1a 0%, #121212 80%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 2rem;
+            font-size:1.2rem;
+        }
+
+        .card {
+            background-color: rgba(26, 26, 26, 0.6);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: left;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-weight: normal;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        input, select, textarea {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 0.5rem;
+            font-size: 2rem;
+            outline: none;
+        }
+
+        button[type="submit"] {
+            border: none;
+            outline: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #ffffff;
+            background: linear-gradient(135deg, #069c9c, #07929c);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease-in-out;
+            align-self: center;
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #06bfbf, #038383);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+            transform: translateY(-2px);
+        }
+
+        a {
+            display: block;
+            color: white;
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            font-size: 1.25rem;
+            transition: color 0.4s ease-in-out, text-decoration-color 0.4s ease-in-out;
+            text-align: center;
+        }
+
+        a:hover {
+            color: teal;
+            text-decoration-color: teal;
+        }
+    </style>
 </head>
-<body>
-    <h1>Virtual Payment</h1>
+<body class="gradient-animate">
 
-    <p>
-        {% if type == 'event' %}
-            You are registering for the event: <strong>{{ object.name }}</strong>
-        {% elif type == 'club' %}
-            You are joining the club: <strong>{{ object.name }}</strong>
-        {% endif %}
-    </p>
+    <div class="card">
+        <h1>Virtual Payment</h1>
 
-    <p>Amount to be paid: <strong>₹{{ amount }}</strong></p>
+        <p>
+            {% if type == 'event' %}
+                You are registering for the event: <strong>{{object.event_name}}</strong>
+            {% elif type == 'club' %}
+                You are joining the club: <strong>{{ object.club_name }}</strong>
+            {% endif %}
+        </p>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Confirm Payment</button>
-    </form>
+        <p>Amount to be paid: <strong>₹{{ amount }}</strong></p>
 
-    <br>
-    <a href="{% url 'homePage' %}">Cancel and go back</a>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Confirm Payment</button>
+        </form>
+
+        <br>
+        <a href="{% url 'homePage' %}">Cancel and go back</a>
+    </div>
+
 </body>
 </html>

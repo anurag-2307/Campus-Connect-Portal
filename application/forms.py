@@ -75,3 +75,16 @@ class VirtualPaymentForm(forms.ModelForm):
         widgets = {
             'payment_method': forms.RadioSelect
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Remove blank choice if it's being added
+        self.fields['payment_method'].empty_label = None
+
+        # Ensure only actual choices are shown
+        self.fields['payment_method'].choices = [
+            ('card', 'Credit/Debit Card'),
+            ('upi', 'UPI'),
+            ('netbanking', 'Netbanking')
+        ]
