@@ -1,7 +1,8 @@
 from django.urls import path
 from application import views
 #Set-ExecutionPolicy Unrestricted -Scope Process
-
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('club/', views.clubPage, name='clubPage'),
     path('event/create/', views.create_event, name='create_event'),
@@ -15,5 +16,8 @@ urlpatterns = [
     path('event/user_events', views.user_events, name = "user_events"),
     path('virtual-payment/', views.virtual_payment, name='virtual_payment'),
     path('user_join', views.user_join, name = 'user_join'),
+    path('clubs/<int:club_id>/events/', views.club_events, name='club_events'),
 ]
+if settings.DEBUG:  # Ensure static files are served in development
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

@@ -7,137 +7,118 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400&display=swap">
   <link rel="stylesheet" href="{%static 'css/toastmessage.css'%}">
   <link rel="stylesheet" href="{%static 'css/animation.css'%}">
+  <link rel="stylesheet" href="{%static 'css/home_page.css'%}">
   <title> Campus Circles</title>
-  <style>
-      /* Global Styles */
-      body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        width: 100%;
-        min-height: 100vh;
-        font-family: 'Inria Sans', sans-serif;
-        letter-spacing: 2px;
-        background: radial-gradient(circle, #1a1a1a 0%, #121212 80%);
-        color: white;
-        display: flex;
-        flex-direction: column;
-      }
-      
-
-      /* Navbar (inherits body's background) */
-      .frame-child {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 117px;
-          background: inherit; /* Inherit radial gradient */
-          padding: 0 2rem;
-          box-shadow: none;
-      }
-
-      .campus-connect {
-          font-size: 24px;
-      }
-
-      /* Navigation */
-      .nav-links {
-          display: flex;
-          gap: 2rem;
-      }
-
-      .nav-links a,
-      .nav-links div {
-          color: white;
-          text-decoration: underline;
-          text-decoration-color: transparent;
-          font-size: 18px;
-          cursor: pointer;
-          transition: color 0.4s ease-in-out, text-decoration-color 0.4s ease-in-out;
-      }
-
-      .nav-links a:hover,
-      .nav-links div:hover {
-          color: teal;
-          text-decoration-color: teal;
-      }
-
-      /* Event List */
-      .event-list-content {
-          padding: 2rem;
-          flex: 1; /* Pushes content down to avoid gaps */
-      }
-
-      .event-item {
-          background: rgba(26, 26, 26, 0.85);
-          margin-bottom: 1rem;
-          padding: 1.5rem;
-          border-radius: 6px;
-          color: #ddd;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      }
-
-      .event-item a {
-          color: white;
-          text-decoration: underline;
-          text-decoration-color: transparent;
-          transition: color 0.4s ease-in-out, text-decoration-color 0.4s ease-in-out;
-      }
-
-      .event-item a:hover {
-          color: teal;
-          text-decoration-color: teal;
-      }
-      .content-wrapper {
-        padding: 0 2rem;
-        flex: 1;
-      }
-      
-  </style>
 </head>
 <body class="gradient-animate">
     <div class="content-wrapper">
   <div class="rectangle-parent">
+   
     <!-- Navbar -->
     <div class="frame-child">
       <div class="campus-connect">Campus Circles</div>
       <div class="nav-links">
-        <div class="about">About</div>
-        <div class="contact">Contact</div>
         
       {% if user.is_authenticated %}
-      {% if user.is_club_admin %}
-      <a href="{% url 'create_event' %}">Create Event</a>
-      <a href="{% url 'event_list' %}">Manage Events</a>
       
-      {% if not user.clubadmin.club %}
-      <a href="{% url 'create_club' %}">Create Club</a>
-      <a href="{% url 'join_club' %}">Join Club</a>
-      <span>Welcome Club Admin : {{user.username}}</span>
-    {% endif %}
-      {% endif %}
+      <div class="about">About</div>
+      <div class="contact">Contact</div>
+        {% if user.is_club_admin %}
+          <a href="{% url 'create_event' %}">Create Event</a>
+          <a href="{% url 'event_list' %}">Manage Events</a>
+          <span>Welcome Club Admin : {{user.username}}</span>
+      
+          {% if not user.clubadmin.club %}
+            <a href="{% url 'create_club' %}">Create Club</a>
+            <a href="{% url 'join_club' %}">Join Club</a>
+          {% endif %}
+        {% endif %}
 
-      {%if not user.is_club_admin%}
+        {%if not user.is_club_admin%}
           {%if not user.is_club_member%}
-          <a href="{%url 'user_join'%}"> Become a Club Member Now!</a>
+            <a href="{%url 'user_join'%}"> Become a Club Member Now!</a>
           {%endif%}
-      <a href="{% url 'event_list' %}">Upcoming Events</a>
-      <a href="{%url 'user_events'%}">Your Events</a>
-      <span class="user">{{ user.username }}</span>
+          <a href="{% url 'event_list' %}">Upcoming Events</a>
+          <a href="{%url 'user_events'%}">Your Events</a>
+          <span class="user">{{ user.username }}</span>
 
-      {%endif%}
-      <a href="{% url 'logout' %}">Logout</a>
+        {%endif%}
+        <a href="{% url 'logout' %}">Logout</a>
       {% else %}
-      <a href="{% url 'login' %}">Login</a>
-      <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
       {% endif %}
 
           </div>
+          
         </div>
+        {% if not user.is_authenticated %}
+        <section class="hero-section">
+          <div class="hero-content">
+            <h1>Welcome to Campus Circles</h1>
+            <p>Discover campus events, connect with your tribe, and be part of something awesome.</p>
+            <a href="{% url 'register' %}" class="cta-btn">Get Started</a>
+          </div>
+        </section>
+        {% endif %}
+        {%if not user.is_club_admin and user.is_authenticated%}
+      <div class="no-club-engagement animate-pop">
+        <h3>Discover Campus Life</h3>
+
+        <div class="event-gallery">
+          <img src="{% static 'images/event_image1.png' %}" alt="Event 1" class="event-image">
+          <img src="{% static 'images/event_image2.png' %}" alt="Event 1" class="event-image">
+          <img src="{% static 'images/event_image3.png' %}" alt="Event 1" class="event-image">
+          <img src="{% static 'images/event_image4.png' %}" alt="Event 1" class="event-image">
+          <img src="{% static 'images/event_image5.png' %}" alt="Event 1" class="event-image">
         </div>
 
+        <p class="engagement-text">
+          There’s a world of events happening around you — from workshops to fests. 
+          Join a club, make memories, and be part of something exciting.
+        </p>
+      </div>
+      {%endif%}
+    </div>
+        
+  </div>
+
     <!-- Events Section -->
+    {%if user.is_club_admin%}
+    <div class="dashboard-container">
+      <!-- Left: Event cards -->
+      <div class="event-list-content">
+        {% for item in event_data %}
+        <div class="event-item animate-pop">
+          <h3>{{ item.event.event_name }}</h3>
+          <p>{{ item.event.event_description }}</p>
+          <p><strong>Date:</strong> {{ item.event.event_date }}</p>
+          <p><strong>Location:</strong> {{ item.event.event_location }}</p>
+          <hr>
+          <p><strong>Registered Users:</strong> {{ item.user_count }}</p>
+          <p><strong>Revenue:</strong> ₹{{ item.revenue }}</p>
+          <p><strong>Days Remaining:</strong> {{ item.days_remaining }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    
+      <!-- Right: Stats card -->
+      <div class="stats-card">
+        <h2>Club Stats</h2>
+        <div class="stat-item">
+          <span>Total Events:</span> {{ total_events }}
+        </div>
+        <div class="stat-item">
+          <span>Total Members:</span> {{ total_members }}
+        </div>
+        <div class="stat-item">
+          <span>Total Revenue:</span> ₹{{ total_revenue }}
+        </div>
+      </div>
+    </div>
+    
+    {%endif%}
+    
   </div>
   {% if messages %}
     <div id="toast-container">

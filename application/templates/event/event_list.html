@@ -69,27 +69,45 @@
             color: teal;
             text-decoration-color: teal; /* Show underline on hover */
         }
-        .register-for-event a, 
-        .back a {
+        
+    .back-link.top-left {
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        font-size: 1.25rem;
+        z-index: 1000;
+      }
+      
+      .back-link.top-left a {
+        color: #fff;
+        text-decoration: underline;
+        text-decoration-color: transparent;
+        transition: color 0.5s ease-in-out, text-decoration-color 0.5s ease-in-out;
+      }
+      
+      .back-link.top-left a:hover {
+        color: #06bfbf;
+        text-decoration-color: #06bfbf;
+      }
+        .register-for-event a {
             color: white;
             text-decoration: underline;
             text-decoration-color: transparent; /* Hide underline initially */
             font-size: 18px;
             transition: color 0.25s ease-in, text-decoration-color 0.5s ease-in;
         }
-        .register-for-event a:hover, 
-        .back a:hover {
+        .register-for-event a:hover {
             color: teal;
             text-decoration-color: teal; /* Show underline with same timing */
         }
     </style>
 </head>
 <body>
-
+    <div class="back-link top-left">
+        <a href="{% url 'homePage' %}">← Back</a>
+    </div>
     <div class="container">
-        <div class="back">
-            <a href="{% url 'homePage' %}">← Back</a>
-        </div>
+        
 
         <div class="upcoming-events">Upcoming Events</div>
 

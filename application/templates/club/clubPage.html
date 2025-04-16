@@ -1,0 +1,276 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400&display=swap">
+  <link rel="stylesheet" href="{%static 'css/toastmessage.css'%}">
+  <link rel="stylesheet" href="{%static 'css/animation.css'%}">
+  <title> Campus Circles</title>
+  <style>
+      /* Global Styles */
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        width: 100%;
+        min-height: 100vh;
+        font-family: 'Inria Sans', sans-serif;
+        letter-spacing: 2px;
+        background: radial-gradient(circle, #1a1a1a 0%, #121212 80%);
+        color: white;
+        display: flex;
+        flex-direction: column;
+      }
+      
+
+      /* Navbar (inherits body's background) */
+      .frame-child {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 117px;
+          background: inherit; /* Inherit radial gradient */
+          padding: 0 2rem;
+          box-shadow: none;
+      }
+
+      .campus-connect {
+          font-size: 24px;
+      }
+
+      /* Navigation */
+      .nav-links {
+          display: flex;
+          gap: 2rem;
+      }
+
+      .nav-links a,
+      .nav-links div {
+          color: white;
+          text-decoration: underline;
+          text-decoration-color: transparent;
+          font-size: 18px;
+          cursor: pointer;
+          transition: color 0.4s ease-in-out, text-decoration-color 0.4s ease-in-out;
+      }
+
+      .nav-links a:hover,
+      .nav-links div:hover {
+          color: teal;
+          text-decoration-color: teal;
+      }
+
+      /* Event List */
+      .event-list-content {
+          padding: 2rem;
+          flex: 1; /* Pushes content down to avoid gaps */
+      }
+
+      .event-item {
+          background: rgba(26, 26, 26, 0.85);
+          margin-bottom: 1rem;
+          padding: 1.5rem;
+          border-radius: 6px;
+          color: #ddd;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .event-item a {
+          color: white;
+          text-decoration: underline;
+          text-decoration-color: transparent;
+          transition: color 0.4s ease-in-out, text-decoration-color 0.4s ease-in-out;
+      }
+
+      .event-item a:hover {
+          color: teal;
+          text-decoration-color: teal;
+      }
+      .content-wrapper {
+        padding: 0 2rem;
+        flex: 1;
+      }
+      
+/* Container for the Event Dashboard */
+.event-dashboard {
+    background: rgba(20, 20, 20, 0.95);  /* A dark translucent background */
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Event Title */
+  .event-dashboard h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: teal; /* A pop of color */
+    text-align: center;
+  }
+  
+  /* Event Description and other details */
+  .event-dashboard p {
+    font-size: 16px;
+    margin: 0.5rem 0;
+    line-height: 1.5;
+  }
+  
+  /* Styling for the Stats Card inside the Event Dashboard */
+  .stats-card {
+    background: rgba(255, 255, 255, 0.1);  /* very subtle light overlay */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  /* Emphasize labels inside the stats card */
+  .stats-card p strong {
+    color: teal;
+  }
+  
+  /* Responsive adjustments if needed */
+  @media (max-width: 640px) {
+    .event-dashboard {
+      margin: 1rem;
+      padding: 1.5rem;
+    }
+    
+    .event-dashboard h2 {
+      font-size: 1.75rem;
+    }
+    
+    .event-dashboard p {
+      font-size: 14px;
+    }.event-list-content {
+        padding: 2rem;
+        flex: 1;
+      }
+      
+      .event-item {
+        background: rgba(26, 26, 26, 0.85);
+        margin-bottom: 1rem;
+        padding: 1.5rem;
+        border-radius: 6px;
+        color: #ddd;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+      
+      .event-item a {
+        color: white;
+        text-decoration: underline;
+        text-decoration-color: transparent;
+        transition: color 0.4s ease-in-out, text-decoration-color 0.4s ease-in-out;
+      }
+      
+      .event-item a:hover {
+        color: teal;
+        text-decoration-color: teal;
+      }
+      
+      .content-wrapper {
+        padding: 0 2rem;
+        flex: 1;
+      }
+      
+      /* Pop-up Animation for Event Cards */
+      @keyframes popUp {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      
+      .animate-pop {
+        animation: popUp 0.4s ease-out;
+      }
+      
+      /* Additional styling for no events message */
+      .no-events {
+        text-align: center;
+        padding: 2rem;
+        font-size: 1.2rem;
+        color: #aaa;
+      }
+  }
+  </style>
+</head>
+<body class="gradient-animate">
+    <div class="content-wrapper">
+  <div class="rectangle-parent">
+    <!-- Navbar -->
+    <div class="frame-child">
+      <div class="campus-connect">Campus Circles</div>
+      <div class="nav-links">
+        <div class="about">About</div>
+        <div class="contact">Contact</div>
+      
+        {% if user.is_authenticated %}
+  {% if user.is_club_admin %}
+    {% with club_admin=user.clubadmin %}
+      {% if club_admin.club %}
+        <!-- Club admin WITH a club -->
+        <a href="{% url 'create_event' %}">Create Event</a>
+        <a href="{% url 'event_list' %}">Manage Events</a>
+        <span>Welcome Club Admin: {{ user.username }}</span>
+      {% else %}
+        <!-- Club admin WITHOUT a club -->
+        <a href="{% url 'create_club' %}">Create Club</a>
+        <a href="{% url 'join_club' %}">Join Club</a>
+        <span>Welcome Club Admin: {{ user.username }}</span>
+      {% endif %}
+    {% endwith %}
+  {% else %}
+    <!-- Normal user (non-admin) -->
+    <a href="{% url 'event_list' %}">Upcoming Events</a>
+    <a href="{% url 'user_events' %}">Your Events</a>
+    <span>Welcome: {{ user.username }}</span>
+  {% endif %}
+  <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+  <a href="{% url 'login' %}">Login</a>
+  <a href="{% url 'register' %}">Register</a>
+{% endif %}
+
+
+      </div>
+      
+        </div>
+        </div>
+        {% if events %}
+    <div class="event-list-content">
+        {% for event in events %}
+          <div class="event-item animate-pop">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.description }}</p>
+            <!-- Additional event details here -->
+            <p><strong>Date:</strong> {{ event.date }}</p>
+            <p><strong>Location:</strong> {{ event.location }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="no-events">
+        <p>No events at the moment.</p>
+      </div>
+    {% endif %}
+  </div>
+  {% if messages %}
+    <div id="toast-container">
+        {% for message in messages %}
+            <div class="toast toast-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+</body>
+</html>

@@ -49,6 +49,13 @@
             text-align: right;
             flex-grow: 1;
         }
+        .back{
+            position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        font-size: 1.25rem;
+        z-index: 1000;
+        }
         .back a {
             color: white;
             text-decoration: underline;
@@ -84,12 +91,12 @@
     </style>
 </head>
 <body>
+    <div class="back">
+        <a href="{% url 'homePage' %}">← Back</a>
+    </div>
 
     <div class="container">
-        <div class="back">
-            <a href="{% url 'homePage' %}">← Back</a>
-        </div>
-
+        
         <div class="user-events">Your Events</div>
 
         {% for event in events %}

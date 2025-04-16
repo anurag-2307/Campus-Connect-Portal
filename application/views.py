@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import  get_user_model, authenticate, login as auth_login
 from django.contrib import auth
 from application.models import CustomUser, Event, ClubAdmin, Club, EventRegistration, EventImage
 from application.forms import EventForm, ClubForm, ClubJoinForm
@@ -68,7 +68,10 @@ def login(request):
         if user is not None:
             auth_login(request, user)
             messages.success(request, 'Logged in Successfully.')
-            return redirect('homePage')
+            if request.user.is_club_admin:
+                return redirect('clubPage')
+            else:
+                return redirect('homePage')
         else:
             messages.error(request, 'Invalid credentials')
             return redirect('login')
@@ -76,8 +79,55 @@ def login(request):
         return render(request, 'login.html')
 
 
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+from .models import Event, EventRegistration, ClubAdmin
+
 def homePage(request):
-    return render(request, 'home.html')
+    event_data = []
+
+    total_events = 0
+    total_members = 0
+    total_revenue = 0
+    if request.user.is_authenticated and request.user.is_club_admin:
+        try:
+            User = get_user_model()
+            user = User.objects.select_related('clubadmin__club').get(id=request.user.id)
+            user_club = user.clubadmin.club
+
+            events = Event.objects.filter(club=user_club)
+
+            for event in events:
+                registrations = EventRegistration.objects.filter(event=event)
+                user_count = registrations.count()
+                revenue = 0
+
+                for reg in registrations:
+                    is_member = reg.user.clubs.exists()
+                    revenue += event.member_discount_price if is_member else event.standard_price
+
+                days_remaining = (event.event_date.date() - timezone.now().date()).days
+
+                event_data.append({
+                    'event': event,
+                    'user_count': user_count,
+                    'revenue': revenue,
+                    'days_remaining': days_remaining,
+                })
+                total_events = events.count()
+                total_members = user_club.members.count()
+                total_revenue = sum(item['revenue'] for item in event_data)
+
+        except ClubAdmin.DoesNotExist:
+            messages.error(request, "Admin profile not found. Please re-join or recreate your club.")
+
+    return render(request, 'home.html', {
+            'event_data': event_data,
+            'total_events': total_events,
+            'total_members': total_members,
+            'total_revenue': total_revenue,
+        })
+
 
 def is_club_member(request):
     return request.user.clubs.exists()
@@ -92,6 +142,12 @@ def logout(request):
 
 
 def clubPage(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged.")
+        return redirect('login')
+    if not request.user.is_club_admin:
+        messages.error(request, "You must be a club admin.")
+        return redirect('homePage')
     return render(request, 'home.html')
 
 
@@ -159,7 +215,7 @@ def create_event(request):
 def update_event(request, event_id):
     if not request.user.is_club_admin:
         messages.error(request, "Only club admins can update events.")
-        return redirect('homePage')
+        return redirect('club/clubPage')
 
     user_clubs = [request.user.clubadmin.club]
     event = get_object_or_404(Event, id=event_id, club__in=user_clubs)
@@ -192,12 +248,12 @@ def delete_event(request, event_id):
         return redirect('login')
     if not request.user.is_club_admin:
         messages.error(request, "Only club admins can delete events.")
-        return redirect('homePage')
+        return redirect('clubPage')
 
     club_admin = request.user.clubadmin
     if not club_admin:
         messages.error(request, "No club admin record found for your account.")
-        return redirect('homePage')
+        return redirect('clubePage')
     
     event = get_object_or_404(Event, id=event_id, club=club_admin.club)
     event.delete()
@@ -205,7 +261,7 @@ def delete_event(request, event_id):
     return redirect('event_list')
 
 from django.db import IntegrityError, transaction
-
+from django.contrib.sessions.models import Session
 
 def create_club(request):
     if not request.user.is_authenticated or not request.user.is_club_admin:
@@ -231,8 +287,13 @@ def create_club(request):
                     # Create new ClubAdmin
                     ClubAdmin.objects.create(user=request.user, club=club, club_password=hashed_password)
 
+                    User = get_user_model()
+                    user = User.objects.get(id=request.user.id)
+
+                    # Log them in again to refresh session data
+                    login(request, user)
                 messages.success(request, "Club created successfully!")
-                return redirect('homePage')
+                return redirect('clubPage')
             
             except Exception as e:
                 print(f"Error: {e}")  # Debugging
@@ -267,7 +328,7 @@ def join_club(request):
             club_admin = ClubAdmin.objects.filter(club=club).first()
             if not club_admin:
                 messages.error(request, "This club has no admin yet. Please contact the club.")
-                return redirect("homePage")
+                return redirect("clubPage")
 
             # Check if the provided password matches the club admin's password.
             if club_admin.check_password(club_password):
@@ -278,6 +339,9 @@ def join_club(request):
                     messages.success(request, f"You have been added as an admin for {club.club_name}.")
                 # If your flow requires a virtual payment process after joining,
                 # redirect accordingly.
+                session = request.session
+                session['user_club'] = club.id  # Store club ID in session
+                session.save()
                 messages.success(request, 'You are now a club admin for {club.club_name}')
                 return redirect('clubPage')
             else:
@@ -312,6 +376,7 @@ def join_club(request):
 
     # Redirect to virtual payment with context
     return redirect(f'{reverse("virtual_payment")}?type=event&id={event.id}&amount={amount}')'''
+from django.utils import timezone
 
 def register_event(request, event_id):
     if not request.user.is_authenticated:
@@ -319,12 +384,30 @@ def register_event(request, event_id):
         return redirect('login')
     
     event = get_object_or_404(Event, id = event_id)
+    registrations = EventRegistration.objects.filter(event=event)
+
+    # Get count and calculate revenue
+    user_count = registrations.count()
+    revenue = 0
+    for reg in registrations:
+        is_member = reg.user.clubs.exists()
+        revenue += event.member_discount_price if is_member else event.standard_price
+
+    # Days remaining
+    days_remaining = (event.event_date.date() - timezone.now().date()).days
+
+    context = {
+        'event': event,
+        'user_count': user_count,
+        'revenue': revenue,
+        'days_remaining': days_remaining,
+    }
     if request.method == "POST":
         is_member = request.user.clubs.exists()
         amount = event.member_discount_price if is_member else event.standard_price
         return redirect(f'{reverse("virtual_payment")}?type=event&id={event.id}&amount={amount}')
 
-    return render(request, 'event/register_event.html', {'event' : event})
+    return render(request, 'event/register_event.html',context)
 
 def event_details(request,event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -409,4 +492,12 @@ def virtual_payment(request):
         'object': target,
         'amount': amount,
         'type': obj_type,
+    })
+
+def club_events(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    events = Event.objects.filter(club=club)
+    return render(request, 'events/club_events.html', {
+        'club': club,
+        'events': events,
     })
